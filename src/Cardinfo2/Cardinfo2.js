@@ -1,7 +1,7 @@
 import React from 'react';
 import './Cardinfo2.css';
 
-const cardinfo2 = (props) => {
+const Cardinfo2 = (props) => {
     return (
         <div className="card2">
              <h1 onClick={props.click}>Hello, {props.name}</h1>
@@ -12,4 +12,4 @@ const cardinfo2 = (props) => {
         );
 }
  
-export default cardinfo2;
+export default Cardinfo2;

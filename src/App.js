@@ -15,12 +15,13 @@ function Cardinfo(props) { //component
 function App() { //app
   const [cardinfoState, setCardinfoState]= useState({
     cardinfo2: [
-      { name: "Enzo" , age: 22},
-      { name: "jejes" , age: 20},
-      { name: "lala" , age: 12},
-      { name: "Rob" , age: 44}
+      { id : "A1", name: "Enzo" , age: 22},
+      { id : "A2", name: "jejes" , age: 20},
+      { id : "A3", name: "lala" , age: 12},
+      { id : "A4", name: "Rob" , age: 44}
     ],
-    valor : "otra cosa"
+    valor : "otra cosa",
+    show : false
   }); 
 
 
@@ -28,56 +29,110 @@ function App() { //app
       console.log("se apreto")
       setCardinfoState({
         cardinfo2: [
-          { name: nombre , age: 22},
-          { name: nombre , age: 20},
-          { name: nombre , age: 12},
-          { name: nombre , age: 44}
+          { id : "A1", name: nombre , age: 22},
+          { id : "A2", name: nombre , age: 20},
+          { id : "A3", name: nombre , age: 12},
+          { id : "A4", name: nombre , age: 44}
         ],
-        valor : cardinfoState.valor
+        valor : cardinfoState.valor,
+        show : cardinfoState.show
     });
   };
 
   const switchAgeNameHnadler1  = () => {
     setCardinfoState({
       cardinfo2: [
-        { name: "Enzo" , age: 99},
-        { name: "jejes" , age: 99},
-        { name: "lala" , age: 99},
-        { name: "Rob" , age: 44}
+        { id : "A1", name: "Enzo" , age: 99},
+        { id : "A2", name: "jejes" , age: 99},
+        { id : "A3", name: "lala" , age: 99},
+        { id : "A4", name: "Rob" , age: 44}
       ],
-      valor : cardinfoState.valor
+      valor : cardinfoState.valor,
+      show : cardinfoState.show
     });
 
   }
 
-  const liveModifyNameHandler = (event) => {
+  
+  const showCards = () => {
+    const doesShow = cardinfoState.show;
+    {console.log(cardinfoState.cardinfo2)}
     setCardinfoState({
-      cardinfo2: [
-        { name: event.target.value , age: 100},
-        { name: cardinfoState.cardinfo2[1].name , age: 99},
-        { name: cardinfoState.cardinfo2[2].name , age: 99},
-        { name: cardinfoState.cardinfo2[3].name , age: 44}
-      ],
-      valor : cardinfoState.valor
+      cardinfo2 : cardinfoState.cardinfo2,
+      valor : cardinfoState.valor,
+      show : !doesShow
+    });
+    {console.log(cardinfoState.cardinfo2)}
+  }
+
+  const removeCard = (cardIndex) => {
+    const cards = [...cardinfoState.cardinfo2];
+    cards.splice(cardIndex, 1);
+    setCardinfoState({
+      cardinfo2 : cards,
+      valor : cardinfoState.valor,
+      show : cardinfoState.show
+    })
+    
+  }
+
+   const liveModifyNameHandler = (event, id ) => {
+    const cardIndex = cardinfoState.cardinfo2.findIndex(c => {
+      return c.id === id;
+    })
+    
+    const card = {...cardinfoState.cardinfo2[cardIndex]};
+    card.name = event.target.value;
+    const cards = [... cardinfoState.cardinfo2];
+
+    cards[cardIndex] = card;
+    setCardinfoState({
+      cardinfo2: cards,
+      valor : cardinfoState.valor,
+      show : cardinfoState.show
     });
   }
 
-  console.log(cardinfoState);
+
+  let vClases = [];
+
+  if(cardinfoState.cardinfo2.length <= 2 ){
+    vClases.push('red');
+  }
+  if(cardinfoState.cardinfo2.length <= 1 ){
+    vClases.push('bold');
+  }
+
+
+  let cards = null;
+
+  if(cardinfoState.show) {
+    cards = (
+      <div>
+        <p className={vClases.join(" ")}>Texto clase Dinamica</p> 
+          {cardinfoState.cardinfo2.map((card,index) => {
+            return (
+              <Cardinfo2
+                key = {card.id}
+                name= {card.name}
+                age = {card.age}
+                click = {() => removeCard(index)}
+                changed = {(event) => liveModifyNameHandler(event, card.id)}
+              />
+            )
+          })}
+        <button  onClick={switchAgeNameHnadler1}>Cambiar edad</button>
+
+        </div> 
+    );
+  }
+
   return (
     <div className="App">
-        <button onClick={switchAgeNameHnadler1}>Cambiar edad</button>
-        <Cardinfo name={cardinfoState.cardinfo2[0].name} age={cardinfoState.cardinfo2[0].age}/>
-        <Cardinfo name={cardinfoState.cardinfo2[1].name} age={cardinfoState.cardinfo2[1].age}/>
 
-        <Cardinfo2 
-          name={cardinfoState.cardinfo2[2].name} 
-          age= {cardinfoState.cardinfo2[2].age} 
-          click= {() => switchNameHandler1('Nombre ca')}
-          changed = {liveModifyNameHandler}>
-          CHILDREN
-        </Cardinfo2>
-
-        <Cardinfo name={cardinfoState.cardinfo2[3].name} age={cardinfoState.cardinfo2[3].age} click={switchAgeNameHnadler1}/>
+      <button onClick={showCards}>Mostrar Cards</button>
+      {cards}
+      
     </div>
   );
 }
@@ -125,4 +180,45 @@ export default App;
 //      
 //    );
 //  }
+//}
+
+
+
+//{
+//  cardinfoState.show ? 
+//  <div>
+//    <button onClick={switchAgeNameHnadler1}>Cambiar edad</button>
+//    <Cardinfo name={cardinfoState.cardinfo2[0].name} age={cardinfoState.cardinfo2[0].age}/>
+//    <Cardinfo name={cardinfoState.cardinfo2[1].name} age={cardinfoState.cardinfo2[1].age}/>
+//    <Cardinfo2 
+//      name={cardinfoState.cardinfo2[2].name} 
+//      age= {cardinfoState.cardinfo2[2].age} 
+//      click= {() => switchNameHandler1('Nombre ca')}
+//      changed = {liveModifyNameHandler}>
+//      CHILDREN
+//    </Cardinfo2>
+//    <Cardinfo name={cardinfoState.cardinfo2[3].name} age={cardinfoState.cardinfo2[3].age} click={switchAgeNameHnadler1}/>
+//  </div> : null
+//}
+
+
+
+// VERSION PENULTIMA
+//let cards = null;
+//if(cardinfoState.show) {
+//  cards = (
+//    <div>
+//        <button onClick={switchAgeNameHnadler1}>Cambiar edad</button>
+//        <Cardinfo name={cardinfoState.cardinfo2[0].name} age={cardinfoState.cardinfo2[0].age}/>
+//        <Cardinfo name={cardinfoState.cardinfo2[1].name} age={cardinfoState.cardinfo2[1].age}/>
+//        <Cardinfo2 
+//          name={cardinfoState.cardinfo2[2].name} 
+//          age= {cardinfoState.cardinfo2[2].age} 
+//          click= {() => switchNameHandler1('Nombre ca')}
+//          changed = {liveModifyNameHandler}>
+//          CHILDREN
+//        </Cardinfo2>
+//        <Cardinfo name={cardinfoState.cardinfo2[3].name} age={cardinfoState.cardinfo2[3].age} click={switchAgeNameHnadler1}/>
+//      </div> 
+//  );
 //}
