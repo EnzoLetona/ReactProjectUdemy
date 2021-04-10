@@ -1,18 +1,39 @@
 import './App.css';
 import React, {useState} from 'react';
 import Cardinfo2 from './Cardinfo2/Cardinfo2';
+import styled from 'styled-components'
+import axios from 'axios';
+import StyledButton2 from './StylesComponents/StyleButton';
 
-function Cardinfo(props) { //component
-  return (
-    <div className="card">
-      <h1 >Hello, {props.name}</h1>
-      <p onClick={props.click}> tengo: {props.age} años </p>
-    </div>
-    );
-}
+const StyledButton = styled.button`
+  background-color: ${props => props.alt ? 'red' : 'rgb(236, 145, 40)'};
+  color:white;
+  font: inherit;
+  border: 1px solid Black;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 30px;
+  &:hover{
+    background-color:${props => props.alt ? 'salmon' : 'rgb(238, 179, 111)'};
+    color: black;
+  }
+`;
+
+
+
+//function Cardinfo(props) { //component
+//  return (
+//    <div className="card">
+//      <h1 >Hello, {props.name}</h1>
+//      <p onClick={props.click}> tengo: {props.age} años </p>
+//    </div>
+//    );
+//}
+
 
 
 function App() { //app
+
   const [cardinfoState, setCardinfoState]= useState({
     cardinfo2: [
       { id : "A1", name: "Enzo" , age: 22},
@@ -24,6 +45,15 @@ function App() { //app
     show : false
   }); 
 
+  const requestTest = () => {
+    axios.get('http://jsonplaceholder.typicode.com/posts')
+         .then( response => {console.log(response)});
+  }
+
+  //if(cardinfoState.show!=false){
+    requestTest();
+  //}
+  
 
   const switchNameHandler1 = (nombre) => {
       console.log("se apreto")
@@ -56,13 +86,12 @@ function App() { //app
   
   const showCards = () => {
     const doesShow = cardinfoState.show;
-    {console.log(cardinfoState.cardinfo2)}
     setCardinfoState({
       cardinfo2 : cardinfoState.cardinfo2,
       valor : cardinfoState.valor,
       show : !doesShow
     });
-    {console.log(cardinfoState.cardinfo2)}
+    
   }
 
   const removeCard = (cardIndex) => {
@@ -130,13 +159,13 @@ function App() { //app
   return (
     <div className="App">
 
-      <button onClick={showCards}>Mostrar Cards</button>
+      <StyledButton2 altt={cardinfoState.show} onClick={showCards}>Mostrar Cards</StyledButton2>
       {cards}
       
     </div>
   );
 }
-
+//PREGUNTAR ALT
 //class App extends Component {
 //  state = {
 //    cardinfo2: [        <button onClick={() => switchHandler('PPROBANDO')}>Cambiar Nombre</button>
